@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Só o gate de segredo: este repo não tem dependência para escanear.
+  # Vale mesmo assim: chave commitada uma vez fica no histórico para sempre.
+  supply-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # Actions de terceiros pinadas por SHA, não por tag mutável — tag pode ser
+      # movida pelo autor upstream ou por quem sequestrar a conta dele.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Varre o HISTÓRICO, não só o diff: chave commitada e removida depois
+          # continua recuperável por quem clonar.
+          fetch-depth: 0
+
+      - name: Gate — nenhum segredo no histórico
+        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc # v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml

@@ -1,0 +1,12 @@
+# Exceções ao gate de segredo.
+#
+# Cada entrada responde UMA pergunta: "por que isto não é segredo?" — não
+# "achamos aceitável". Se a resposta for "acho que ninguém usa", o valor se
+# rotaciona, não se libera.
+#
+# Sem exceção nenhuma: a varredura do histórico completo deste repo, em
+# 29/07/2026, não achou nada. O arquivo existe para que a primeira exceção já
+# nasça com o porquê escrito, em vez de aparecer solta num commit apressado.
+
+[extend]
+useDefault = true
